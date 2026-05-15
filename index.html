@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PREPARO | BANCO - SELEÇÃO</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(to right, #3d72b4, #525252);
+        }
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            min-height: 100vh;
+            transition: background 0.5s ease;
+            font-size: 13px;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+        .glass-dark {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .text-glow {
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.3);
+        }
+        .card-collapsed {
+            max-height: 60px;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-expanded {
+            max-height: 2000px;
+        }
+        .footer-dock {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            border-radius: 24px;
+            display: flex;
+            gap: 20px;
+            z-index: 50;
+        }
+        .dock-item {
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+        .dock-item:hover {
+            transform: scale(1.2) translateY(-5px);
+        }
+        .spinner-container {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(4px);
+        }
+        .hidden-until-load {
+            display: none;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+        .skin-option {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 2px solid white;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .skin-option:hover {
+            transform: scale(1.1);
+        }
+        .btn-action {
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.15);
+            transition: all 0.2s;
+        }
+        .btn-action:hover {
+            background: rgba(255,255,255,0.25);
+        }
+        .editable-cell:focus {
+            background: rgba(255,255,255,0.1);
+            outline: none;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- Header -->
+    <header class="max-w-4xl mx-auto mb-8">
+        <div class="glass p-4 rounded-xl text-center">
+            <h1 class="text-lg font-semibold tracking-widest text-glow uppercase">PREPARO | BANCO - SELEÇÃO</h1>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto space-y-6 pb-32">
+        
+        <!-- Import Card -->
+        <section id="import-card" class="glass p-6 rounded-2xl transition-all duration-500">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-sm font-medium flex items-center gap-2">
+                    <i data-lucide="file-up" class="w-4 h-4"></i> IMPORTAR EXCEL
+                </h2>
+            </div>
+            <label for="excel-input" class="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-white/20 rounded-xl cursor-pointer hover:bg-white/5 transition-colors">
+                <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                    <i data-lucide="upload-cloud" class="w-8 h-8 mb-2 opacity-60"></i>
+                    <p class="text-xs opacity-80">Clique para selecionar ou arraste o arquivo</p>
+                    <p class="text-[10px] opacity-50 mt-1">XLS, XLSX, XLSM</p>
+                </div>
+                <input id="excel-input" type="file" accept=".xls,.xlsx,.xlsm" />
+            </label>
+        </section>
+
+        <!-- Mapping Card (Hidden until load) -->
+        <section id="mapping-card" class="glass p-6 rounded-2xl hidden-until-load card-collapsed cursor-pointer" onclick="toggleCard(this)">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-sm font-medium flex items-center gap-2">
+                    <i data-lucide="git-branch" class="w-4 h-4"></i> MAPEAMENTO DE COLUNAS (DE-PARA)
+                </h2>
+                <i data-lucide="chevron-down" class="w-4 h-4 transition-transform arrow"></i>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4 p-2" onclick="event.stopPropagation()">
+                <div class="space-y-2">
+                    <label class="text-[11px] opacity-70 uppercase tracking-wider">Regime Tributário</label>
+                    <select id="map-regime" class="w-full glass-dark p-2 rounded-lg outline-none border-none text-white text-xs">
+                        <option value="">Selecione a coluna...</option>
+                    </select>
+                </div>
+                <div class="space-y-2">
+                    <label class="text-[11px] opacity-70 uppercase tracking-wider">Código da Empresa</label>
+                    <select id="map-codigo" class="w-full glass-dark p-2 rounded-lg outline-none border-none text-white text-xs">
+                        <option value="">Selecione a coluna...</option>
+                    </select>
+                </div>
+                <div class="md:col-span-2 flex justify-end">
+                    <button onclick="processMapping()" class="btn-action flex items-center gap-2 text-xs font-semibold">
+                        <i data-lucide="refresh-cw" class="w-3 h-3"></i> CONVERTER DADOS
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Card (Hidden until load) -->
+        <section id="data-card" class="glass p-6 rounded-2xl hidden-until-load card-collapsed cursor-pointer" onclick="toggleCard(this)">
+            <div class="flex items-center justify-between mb-4">
+                <h2 class="text-sm font-medium flex items-center gap-2">
+                    <i data-lucide="table" class="w-4 h-4"></i> DADOS CONVERTIDOS
+                </h2>
+                <div class="flex items-center gap-4" onclick="event.stopPropagation()">
+                    <div class="flex items-center gap-2 glass-dark px-3 py-1 rounded-full">
+                        <span class="text-[10px] opacity-60">Lote:</span>
+                        <select id="batch-filter" class="bg-transparent border-none outline-none text-[10px]">
+                            <option value="all" class="text-black">Todas</option>
+                            <option value="empty" class="text-black">Vazias</option>
+                            <option value="selected" class="text-black">Selecionadas</option>
+                        </select>
+                        <input type="text" id="batch-value" placeholder="Novo valor..." class="bg-transparent border-none outline-none text-[10px] w-20 border-l border-white/10 pl-2">
+                        <button onclick="applyBatchEdit()" class="hover:text-blue-300"><i data-lucide="check" class="w-3 h-3"></i></button>
+                    </div>
+                    <button onclick="addNewRow()" class="btn-action flex items-center gap-1 text-[10px] py-1">
+                        <i data-lucide="plus" class="w-3 h-3"></i> NOVA LINHA
+                    </button>
+                    <i data-lucide="chevron-down" class="w-4 h-4 transition-transform arrow"></i>
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto custom-scrollbar mt-4" onclick="event.stopPropagation()">
+                <table class="w-full text-left text-xs">
+                    <thead>
+                        <tr class="border-b border-white/10">
+                            <th class="p-2 w-10"><input type="checkbox" id="select-all" onclick="toggleSelectAll()"></th>
+                            <th class="p-2">Regime Tributário</th>
+                            <th class="p-2">Código da Empresa</th>
+                            <th class="p-2 w-10"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="data-table-body">
+                        <!-- Rows injected here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="flex items-center justify-between mt-6" onclick="event.stopPropagation()">
+                <span id="pagination-info" class="text-[10px] opacity-60">Mostrando 0 de 0</span>
+                <div class="flex gap-2">
+                    <button onclick="prevPage()" class="btn-action"><i data-lucide="chevron-left" class="w-3 h-3"></i></button>
+                    <button onclick="nextPage()" class="btn-action"><i data-lucide="chevron-right" class="w-3 h-3"></i></button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer Dock -->
+    <footer class="footer-dock glass">
+        <div class="dock-item relative group" title="Skins">
+            <i data-lucide="palette" class="w-6 h-6"></i>
+            <div class="absolute bottom-12 left-1/2 -translate-x-1/2 glass p-3 rounded-xl hidden group-hover:flex gap-3">
+                <div class="skin-option" style="background: linear-gradient(to right, #3d72b4, #525252);" onclick="setSkin(0)"></div>
+                <div class="skin-option" style="background: linear-gradient(to right, #19547b, #ffd89b);" onclick="setSkin(1)"></div>
+                <div class="skin-option" style="background: linear-gradient(to right, #99f2c8, #1f4037);" onclick="setSkin(2)"></div>
+                <div class="skin-option" style="background: linear-gradient(to right, #FD746C, #2C3E50);" onclick="setSkin(3)"></div>
+            </div>
+        </div>
+        <div class="dock-item" onclick="showExportPopup()" title="Gerar TXT">
+            <i data-lucide="save" class="w-6 h-6"></i>
+        </div>
+    </footer>
+
+    <!-- Spinner -->
+    <div id="spinner" class="spinner-container">
+        <div class="text-center">
+            <div class="inline-block w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin mb-4"></div>
+            <div id="progress-text" class="text-xl font-light tracking-widest">0%</div>
+            <div class="text-[10px] opacity-60 uppercase mt-2">Processando...</div>
+        </div>
+    </div>
+
+    <!-- Export Popup -->
+    <div id="export-popup" class="spinner-container">
+        <div class="glass p-8 rounded-3xl max-w-xs w-full">
+            <h3 class="text-sm font-semibold mb-6 text-center">ESCOLHA O SEPARADOR</h3>
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="exportTxt(',')" class="btn-action py-3 font-mono text-lg">,</button>
+                <button onclick="exportTxt(';')" class="btn-action py-3 font-mono text-lg">;</button>
+                <button onclick="exportTxt('|')" class="btn-action py-3 font-mono text-lg">|</button>
+                <button onclick="exportTxt('\t')" class="btn-action py-3 text-xs">TAB</button>
+            </div>
+            <button onclick="closeExportPopup()" class="w-full mt-6 opacity-50 hover:opacity-100 text-[10px] uppercase tracking-widest">Cancelar</button>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide Icons
+        lucide.createIcons();
+
+        let rawData = [];
+        let convertedData = [];
+        let currentPage = 1;
+        const rowsPerPage = 10;
+        let selectedRows = new Set();
+
+        const skins = [
+            "linear-gradient(to right, #3d72b4, #525252)",
+            "linear-gradient(to right, #19547b, #ffd89b)",
+            "linear-gradient(to right, #99f2c8, #1f4037)",
+            "linear-gradient(to right, #FD746C, #2C3E50)"
+        ];
+
+        function setSkin(index) {
+            document.body.style.background = skins[index];
+        }
+
+        function toggleCard(el) {
+            const isCollapsed = el.classList.contains('card-collapsed');
+            if (isCollapsed) {
+                el.classList.remove('card-collapsed');
+                el.classList.add('card-expanded');
+                el.querySelector('.arrow').style.transform = 'rotate(180deg)';
+            } else {
+                el.classList.add('card-collapsed');
+                el.classList.remove('card-expanded');
+                el.querySelector('.arrow').style.transform = 'rotate(0deg)';
+            }
+        }
+
+        // Excel Import Logic
+        document.getElementById('excel-input').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            showSpinner();
+            const reader = new FileReader();
+            
+            reader.onprogress = (event) => {
+                if (event.lengthComputable) {
+                    const percent = Math.round((event.loaded / event.total) * 100);
+                    updateProgress(percent);
+                }
+            };
+
+            reader.onload = (e) => {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                rawData = XLSX.utils.sheet_to_json(firstSheet);
+                
+                if (rawData.length > 0) {
+                    populateSelectors(Object.keys(rawData[0]));
+                    revealCards();
+                }
+                hideSpinner();
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        function populateSelectors(headers) {
+            const selects = ['map-regime', 'map-codigo'];
+            selects.forEach(id => {
+                const select = document.getElementById(id);
+                select.innerHTML = '<option value="">Selecione a coluna...</option>';
+                headers.forEach(h => {
+                    const opt = document.createElement('option');
+                    opt.value = h;
+                    opt.textContent = h;
+                    opt.className = "text-black";
+                    select.appendChild(opt);
+                });
+            });
+        }
+
+        function revealCards() {
+            document.querySelectorAll('.hidden-until-load').forEach(el => {
+                el.style.display = 'block';
+            });
+            const mappingCard = document.getElementById('mapping-card');
+            mappingCard.classList.remove('card-collapsed');
+            mappingCard.classList.add('card-expanded');
+            mappingCard.querySelector('.arrow').style.transform = 'rotate(180deg)';
+        }
+
+        function processMapping() {
+            const regimeCol = document.getElementById('map-regime').value;
+            const codigoCol = document.getElementById('map-codigo').value;
+
+            if (!regimeCol || !codigoCol) {
+                alert("Por favor, selecione ambas as colunas.");
+                return;
+            }
+
+            showSpinner();
+            updateProgress(0);
+
+            setTimeout(() => {
+                convertedData = rawData.map((row, index) => {
+                    const progress = Math.round((index / rawData.length) * 100);
+                    if (index % 10 === 0) updateProgress(progress);
+                    return {
+                        regime: String(row[regimeCol] || '').trim(),
+                        codigo: String(row[codigoCol] || '').trim()
+                    };
+                }).filter(item => item.regime || item.codigo);
+
+                currentPage = 1;
+                renderTable();
+                hideSpinner();
+                
+                const dataCard = document.getElementById('data-card');
+                dataCard.classList.remove('card-collapsed');
+                dataCard.classList.add('card-expanded');
+                dataCard.querySelector('.arrow').style.transform = 'rotate(180deg)';
+            }, 100);
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('data-table-body');
+            tbody.innerHTML = '';
+            
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const pageData = convertedData.slice(start, end);
+
+            pageData.forEach((row, index) => {
+                const globalIndex = start + index;
+                const tr = document.createElement('tr');
+                tr.className = "border-b border-white/5 hover:bg-white/5 transition-colors";
+                tr.innerHTML = `
+                    <td class="p-2"><input type="checkbox" ${selectedRows.has(globalIndex) ? 'checked' : ''} onchange="toggleRow(${globalIndex})"></td>
+                    <td class="p-2"><div contenteditable="true" class="editable-cell p-1" onblur="updateData(${globalIndex}, 'regime', this.textContent)">${row.regime}</div></td>
+                    <td class="p-2"><div contenteditable="true" class="editable-cell p-1" onblur="updateData(${globalIndex}, 'codigo', this.textContent)">${row.codigo}</div></td>
+                    <td class="p-2"><button onclick="deleteRow(${globalIndex})" class="opacity-40 hover:opacity-100 hover:text-red-400"><i data-lucide="trash-2" class="w-3 h-3"></i></button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            lucide.createIcons();
+            document.getElementById('pagination-info').textContent = `Mostrando ${Math.min(start + 1, convertedData.length)} - ${Math.min(end, convertedData.length)} de ${convertedData.length}`;
+        }
+
+        function updateData(index, field, value) {
+            convertedData[index][field] = value.trim();
+        }
+
+        function addNewRow() {
+            convertedData.unshift({ regime: '', codigo: '' });
+            currentPage = 1;
+            renderTable();
+            // Ensure card is expanded
+            const dataCard = document.getElementById('data-card');
+            dataCard.classList.remove('card-collapsed');
+            dataCard.classList.add('card-expanded');
+        }
+
+        function deleteRow(index) {
+            convertedData.splice(index, 1);
+            selectedRows.delete(index);
+            renderTable();
+        }
+
+        function toggleRow(index) {
+            if (selectedRows.has(index)) selectedRows.delete(index);
+            else selectedRows.add(index);
+        }
+
+        function toggleSelectAll() {
+            const isChecked = document.getElementById('select-all').checked;
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = Math.min(start + rowsPerPage, convertedData.length);
+            
+            for (let i = start; i < end; i++) {
+                if (isChecked) selectedRows.add(i);
+                else selectedRows.delete(i);
+            }
+            renderTable();
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+            }
+        }
+
+        function nextPage() {
+            if (currentPage * rowsPerPage < convertedData.length) {
+                currentPage++;
+                renderTable();
+            }
+        }
+
+        function applyBatchEdit() {
+            const filter = document.getElementById('batch-filter').value;
+            const newValue = document.getElementById('batch-value').value;
+            if (!newValue) return;
+
+            convertedData.forEach((row, index) => {
+                let shouldUpdate = false;
+                if (filter === 'all') shouldUpdate = true;
+                else if (filter === 'empty' && (!row.regime || !row.codigo)) shouldUpdate = true;
+                else if (filter === 'selected' && selectedRows.has(index)) shouldUpdate = true;
+
+                if (shouldUpdate) row.codigo = newValue;
+            });
+            renderTable();
+        }
+
+        function showExportPopup() {
+            if (convertedData.length === 0) {
+                alert("Não há dados para exportar.");
+                return;
+            }
+            document.getElementById('export-popup').style.display = 'flex';
+        }
+
+        function closeExportPopup() {
+            document.getElementById('export-popup').style.display = 'none';
+        }
+
+        function exportTxt(separator) {
+            closeExportPopup();
+            showSpinner();
+            updateProgress(0);
+
+            setTimeout(() => {
+                const groups = {};
+                convertedData.forEach((item, index) => {
+                    if (!item.regime) return;
+                    if (!groups[item.regime]) groups[item.regime] = [];
+                    if (item.codigo) groups[item.regime].push(item.codigo);
+                    if (index % 50 === 0) updateProgress(Math.round((index / convertedData.length) * 100));
+                });
+
+                let content = "";
+                const regimes = Object.keys(groups);
+                regimes.forEach((regime, idx) => {
+                    const codes = groups[regime].join(',');
+                    content += `${regime}${separator}${codes}`;
+                    if (idx < regimes.length - 1) content += "\n";
+                });
+
+                const blob = new Blob([content], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = "empresas.txt";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                updateProgress(100);
+                setTimeout(hideSpinner, 500);
+            }, 100);
+        }
+
+        function showSpinner() { document.getElementById('spinner').style.display = 'flex'; }
+        function hideSpinner() { document.getElementById('spinner').style.display = 'none'; }
+        function updateProgress(percent) { document.getElementById('progress-text').textContent = `${percent}%`; }
+    </script>
+</body>
+</html>
