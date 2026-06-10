@@ -1,0 +1,1820 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleção - Perfil</title>
+    
+    <!-- Google Fonts: Open Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ============================================
+           RESET E ESTILOS BASE
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: linear-gradient(to right, #3d72b4, #525252);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: background 0.5s ease;
+        }
+
+        /* Skins/Temas */
+        body.skin-1 {
+            background: linear-gradient(to right, #19547b, #ffd89b);
+        }
+
+        body.skin-2 {
+            background: linear-gradient(to right, #3d72b4, #525252);
+        }
+
+        body.skin-3 {
+            background: linear-gradient(to right, #191654, #43C6AC);
+        }
+
+        body.skin-4 {
+            background: linear-gradient(to right, #4ca2cd, #67B26F);
+        }
+
+        body.skin-5 {
+            background: linear-gradient(to right, #3f4c6b, #606c88);
+        }
+
+        /* ============================================
+           CONTÊINER PRINCIPAL COM GLASSMORPHISM
+           ============================================ */
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(15px);
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        /* ============================================
+           CABEÇALHO
+           ============================================ */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding-bottom: 15px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 2px 2px 6px rgba(255, 215, 0, 0.4),
+                         0px 0px 10px rgba(255, 215, 0, 0.2);
+            letter-spacing: 1px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        /* Botão de Engrenagem para Skins */
+        .icon-btn {
+            background: rgba(255, 140, 0, 0.3);
+            border: 1px solid rgba(255, 140, 0, 0.5);
+            color: #fff;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .icon-btn:hover {
+            background: rgba(255, 140, 0, 0.5);
+            border-color: rgba(255, 140, 0, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
+        }
+
+        .icon-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Menu de Skins */
+        .skin-menu {
+            position: absolute;
+            top: 80px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(15px);
+            border-radius: 18px;
+            padding: 12px;
+            display: none;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .skin-menu.active {
+            display: flex;
+        }
+
+        .skin-option {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .skin-option:hover {
+            transform: scale(1.15);
+            border-color: #fff;
+        }
+
+        .skin-option.skin-1-preview {
+            background: linear-gradient(to right, #19547b, #ffd89b);
+        }
+
+        .skin-option.skin-2-preview {
+            background: linear-gradient(to right, #3d72b4, #525252);
+        }
+
+        .skin-option.skin-3-preview {
+            background: linear-gradient(to right, #191654, #43C6AC);
+        }
+
+        .skin-option.skin-4-preview {
+            background: linear-gradient(to right, #4ca2cd, #67B26F);
+        }
+
+        .skin-option.skin-5-preview {
+            background: linear-gradient(to right, #3f4c6b, #606c88);
+        }
+
+        /* ============================================
+           BARRA DE AÇÕES COM ÍCONES
+           ============================================ */
+        .action-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .action-bar .icon-btn {
+            width: 38px;
+            height: 38px;
+            font-size: 15px;
+        }
+
+        .action-bar .icon-btn:hover {
+            background: rgba(255, 140, 0, 0.5);
+            border-color: rgba(255, 140, 0, 0.8);
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 150px;
+            padding: 10px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-family: 'Open Sans', sans-serif;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            font-size: 13px;
+        }
+
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-box:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 215, 0, 0.4);
+        }
+
+        /* ============================================
+           TABELA DE PERFIS (CARDS)
+           ============================================ */
+        .table-wrapper {
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            color: #fff;
+        }
+
+        thead {
+            background: rgba(255, 255, 255, 0.08);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        th {
+            padding: 12px 14px;
+            text-align: left;
+            font-weight: 600;
+            text-shadow: 1px 1px 3px rgba(255, 215, 0, 0.3);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        td {
+            padding: 11px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 13px;
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        tbody tr.selected {
+            background: rgba(255, 215, 0, 0.15);
+        }
+
+        /* Input dentro da tabela - Design Moderno e Suave */
+        .table-input {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 4px 2px;
+            border-radius: 0;
+            font-family: 'Open Sans', sans-serif;
+            width: 100%;
+            transition: all 0.3s ease;
+            font-size: 13px;
+            font-weight: 300;
+        }
+
+        .table-input:focus {
+            outline: none;
+            border-bottom-color: rgba(255, 215, 0, 0.5);
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .table-input:hover {
+            border-bottom-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .table-input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Ajuste na linha da tabela para parecer mais limpa */
+        td {
+            padding: 8px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 13px;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Checkbox */
+        input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: #FFD700;
+        }
+
+        /* Ícones de ação na tabela */
+        .row-actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .row-actions .icon-btn {
+            width: 32px;
+            height: 32px;
+            font-size: 13px;
+        }
+
+        /* ============================================
+           PAGINAÇÃO COM ESTILO GLASS
+           ============================================ */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .pagination-info {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 12px;
+            text-shadow: 1px 1px 2px rgba(255, 215, 0, 0.2);
+            margin-right: 15px;
+        }
+
+        #pageNumbers {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .pagination-btn {
+            background: rgba(255, 140, 0, 0.3);
+            border: 1px solid rgba(255, 140, 0, 0.5);
+            color: #fff;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .pagination-btn:hover:not(:disabled) {
+            background: rgba(255, 140, 0, 0.5);
+            border-color: rgba(255, 140, 0, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
+        }
+
+        .pagination-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .pagination-btn.active {
+            background: rgba(255, 140, 0, 0.6);
+            border-color: rgba(255, 140, 0, 1);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(255, 140, 0, 0.4);
+        }
+
+        /* ============================================
+           MODAIS
+           ============================================ */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(3px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 28px;
+            max-width: 550px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 18px;
+            text-shadow: 1px 1px 3px rgba(255, 215, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 22px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            margin-bottom: 18px;
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        /* ============================================
+           FORMULÁRIOS
+           ============================================ */
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: rgba(255, 255, 255, 0.95);
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 2px rgba(255, 215, 0, 0.2);
+        }
+
+        .form-group input[type="file"],
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 13px;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .form-group input[type="file"]::file-selector-button {
+            background: rgba(255, 215, 0, 0.2);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+
+        .form-group input[type="file"]::file-selector-button:hover {
+            background: rgba(255, 215, 0, 0.3);
+        }
+
+        .form-group select {
+            background: rgba(30, 30, 40, 0.6);
+            cursor: pointer;
+        }
+
+        .form-group select option {
+            background: #1e1e28;
+            color: #fff;
+            padding: 8px;
+        }
+
+        .form-group select option:hover {
+            background: #3d3d4d;
+        }
+
+        .form-group select:focus,
+        .form-group input[type="file"]:focus {
+            outline: none;
+            background: rgba(30, 30, 40, 0.8);
+            border-color: rgba(255, 215, 0, 0.4);
+        }
+
+        /* Botões em modais */
+        .modal-btn {
+            padding: 10px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-btn:hover {
+            background: rgba(255, 255, 255, 0.18);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .modal-btn-primary {
+            background: rgba(255, 215, 0, 0.25);
+            border-color: rgba(255, 215, 0, 0.4);
+            color: #FFD700;
+        }
+
+        .modal-btn-primary:hover {
+            background: rgba(255, 215, 0, 0.35);
+            border-color: rgba(255, 215, 0, 0.6);
+        }
+
+        /* ============================================
+           MAPEAMENTO DE COLUNAS
+           ============================================ */
+        .mapping-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .mapping-item {
+            background: rgba(255, 255, 255, 0.04);
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .mapping-item:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .mapping-item label {
+            display: block;
+            margin-bottom: 4px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 400;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mapping-item select {
+            width: 100%;
+            padding: 6px 8px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 11px;
+            cursor: pointer;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .mapping-item select:focus {
+            border-color: rgba(255, 215, 0, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Spinner de Carregamento */
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .spinner-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+        }
+
+        .spinner-circle {
+            width: 100%;
+            height: 100%;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #FFD700;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .spinner-percentage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            font-weight: 700;
+            color: #FFD700;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .th-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .filter-icon {
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.4);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .filter-icon:hover {
+            color: #FFD700;
+        }
+
+        /* Menu de Filtro Estilo Excel */
+        .filter-menu {
+            position: absolute;
+            background: rgba(30, 30, 40, 0.95);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 12px;
+            z-index: 3000;
+            width: 220px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .filter-menu.active {
+            display: flex;
+        }
+
+        .filter-search {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: #fff;
+            padding: 6px 10px;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .filter-list {
+            max-height: 180px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding-right: 4px;
+        }
+
+        .filter-list::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .filter-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+        }
+
+        .filter-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .filter-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+        }
+
+        .filter-item input {
+            cursor: pointer;
+        }
+
+        .filter-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            margin-top: 5px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .filter-btn {
+            flex: 1;
+            padding: 6px;
+            font-size: 11px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            transition: all 0.2s;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .filter-btn-primary {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: rgba(255, 215, 0, 0.3);
+            color: #FFD700;
+        }
+
+        .filter-btn-primary:hover {
+            background: rgba(255, 215, 0, 0.3);
+        }
+
+        .mapping-item select:focus {
+            outline: none;
+            background: rgba(30, 30, 40, 0.8);
+            border-color: rgba(255, 215, 0, 0.4);
+        }
+
+        /* ============================================
+           MENSAGENS
+           ============================================ */
+        .message {
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .message.success {
+            background: rgba(76, 175, 80, 0.25);
+            border: 1px solid rgba(76, 175, 80, 0.4);
+            color: #c8e6c9;
+        }
+
+        .message.error {
+            background: rgba(244, 67, 54, 0.25);
+            border: 1px solid rgba(244, 67, 54, 0.4);
+            color: #ffcdd2;
+        }
+
+        .message.info {
+            background: rgba(33, 150, 243, 0.25);
+            border: 1px solid rgba(33, 150, 243, 0.4);
+            color: #bbdefb;
+        }
+
+        /* ============================================
+           RESPONSIVIDADE
+           ============================================ */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 18px;
+            }
+
+            .mapping-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            th, td {
+                padding: 8px 10px;
+            }
+
+            .modal-content {
+                max-width: 90%;
+                padding: 20px;
+            }
+
+            .action-bar {
+                gap: 6px;
+            }
+
+            .pagination {
+                gap: 6px;
+            }
+        }
+    </style>
+</head>
+<body class="skin-2">
+    <!-- Contêiner Principal -->
+    <!-- Overlay de Carregamento -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner-container">
+            <div class="spinner-circle"></div>
+            <div class="spinner-percentage" id="spinnerPercentage">0%</div>
+        </div>
+        <p id="loadingMessage">Processando...</p>
+    </div>
+
+    <!-- Menu de Filtro Excel -->
+    <div class="filter-menu" id="columnFilterMenu">
+        <input type="text" class="filter-search" id="filterSearch" placeholder="Buscar...">
+        <div class="filter-list" id="filterList">
+            <!-- Itens de filtro dinâmicos -->
+        </div>
+        <div class="filter-actions">
+            <button class="filter-btn" id="clearFilterBtn">Limpar</button>
+            <button class="filter-btn filter-btn-primary" id="applyFilterBtn">Aplicar</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Cabeçalho -->
+        <div class="header">
+            <h1>Nome | Seleção - Perfil |</h1>
+            <div class="header-controls">
+                <button class="icon-btn" id="skinSelectorBtn" title="Selecionar Tema">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <div class="skin-menu" id="skinMenu">
+                    <div class="skin-option skin-1-preview" data-skin="1" title="Tema 1"></div>
+                    <div class="skin-option skin-2-preview" data-skin="2" title="Tema 2"></div>
+                    <div class="skin-option skin-3-preview" data-skin="3" title="Tema 3"></div>
+                    <div class="skin-option skin-4-preview" data-skin="4" title="Tema 4"></div>
+                    <div class="skin-option skin-5-preview" data-skin="5" title="Tema 5"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Área de Mensagens -->
+        <div id="messageContainer"></div>
+
+        <!-- Barra de Ações com Ícones -->
+        <div class="action-bar">
+            <button class="icon-btn" id="importBtn" title="Importar Excel">
+                <i class="fas fa-upload"></i>
+            </button>
+            <button class="icon-btn" id="addRowBtn" title="Adicionar Empresa">
+                <i class="fas fa-plus"></i>
+            </button>
+            <button class="icon-btn" id="bulkEditBtn" title="Editar Selecionadas">
+                <i class="fas fa-edit"></i>
+            </button>
+            <button class="icon-btn" id="generateBtn" title="Gerar TXT">
+                <i class="fas fa-download"></i>
+            </button>
+        </div>
+
+        <!-- Tabela de Perfis -->
+        <div class="table-wrapper">
+            <table id="profilesTable">
+                <thead>
+                    <tr>
+                        <th style="width: 30px;">
+                            <input type="checkbox" id="selectAllCheckbox">
+                        </th>
+                        <th>
+                            <div class="th-content">
+                                <span>Código</span>
+                                <i class="fas fa-filter filter-icon"></i>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="th-content">
+                                <span>Regime</span>
+                                <i class="fas fa-filter filter-icon"></i>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="th-content">
+                                <span>CNPJ</span>
+                                <i class="fas fa-filter filter-icon"></i>
+                            </div>
+                        </th>
+                        <th>
+                            <div class="th-content">
+                                <span>Nome da Empresa</span>
+                                <i class="fas fa-filter filter-icon"></i>
+                            </div>
+                        </th>
+                        <th style="width: 70px;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="profilesTableBody">
+                    <!-- Linhas dinâmicas serão inseridas aqui -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Paginação -->
+        <div class="pagination">
+            <span class="pagination-info" id="paginationInfo">Página 1 de 1</span>
+            <button class="pagination-btn" id="prevBtn" title="Página Anterior">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div id="pageNumbers"></div>
+            <button class="pagination-btn" id="nextBtn" title="Próxima Página">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal de Importação de Excel -->
+    <div class="modal" id="importModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Importar Arquivo Excel</span>
+                <button class="modal-close" onclick="closeModal('importModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="excelFile">Selecione o arquivo Excel:</label>
+                    <input type="file" id="excelFile" accept=".xlsx,.xlsm,.xlsr,.xlsd,.xls">
+                </div>
+                <div id="sheetSelector" style="display: none;">
+                    <div class="form-group">
+                        <label for="sheetSelect">Selecione a aba:</label>
+                        <select id="sheetSelect"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn" onclick="closeModal('importModal')">Cancelar</button>
+                <button class="modal-btn modal-btn-primary" id="proceedMappingBtn">Próximo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Mapeamento de Colunas -->
+    <div class="modal" id="mappingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Mapeamento de Colunas</span>
+                <button class="modal-close" onclick="closeModal('mappingModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: rgba(255, 255, 255, 0.85); margin-bottom: 14px; font-size: 12px;">
+                    Selecione qual coluna do Excel corresponde a cada campo:
+                </p>
+                <div class="mapping-grid">
+                    <div class="mapping-item">
+                        <label>Código</label>
+                        <select id="mapCodigo"></select>
+                    </div>
+                    <div class="mapping-item">
+                        <label>Regime</label>
+                        <select id="mapRegime"></select>
+                    </div>
+                    <div class="mapping-item">
+                        <label>CNPJ</label>
+                        <select id="mapCnpj"></select>
+                    </div>
+                    <div class="mapping-item">
+                        <label>Nome da Empresa</label>
+                        <select id="mapNome"></select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn" onclick="closeModal('mappingModal')">Cancelar</button>
+                <button class="modal-btn modal-btn-primary" id="confirmMappingBtn">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edição em Massa -->
+    <div class="modal" id="bulkEditModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span>Editar Selecionadas</span>
+                <button class="modal-close" onclick="closeModal('bulkEditModal')">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="bulkRegime">Regime:</label>
+                    <input type="text" id="bulkRegime" class="table-input" placeholder="Deixe em branco para não alterar">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn" onclick="closeModal('bulkEditModal')">Cancelar</button>
+                <button class="modal-btn modal-btn-primary" id="confirmBulkEditBtn">Aplicar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script SheetJS para leitura de Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script>
+        // ============================================
+        // VARIÁVEIS GLOBAIS
+        // ============================================
+        let profilesData = [];
+        let currentExcelData = [];
+        let filteredData = []; // Dados após aplicação de filtros
+        let columnMapping = {};
+        let selectedRows = new Set();
+        let currentPage = 1;
+        const itemsPerPage = 10;
+        let activeFilters = {}; // { field: [values] }
+        let currentFilterField = null;
+
+        // ============================================
+        // INICIALIZAÇÃO
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            loadThemeFromStorage();
+            attachEventListeners();
+            renderTable();
+            // Abrir modal de importação automaticamente ao carregar
+            openImportModal();
+        });
+
+        // ============================================
+        // GERENCIAMENTO DE TEMAS (SKINS)
+        // ============================================
+        function attachEventListeners() {
+            // Botão de seletor de tema
+            document.getElementById('skinSelectorBtn').addEventListener('click', function() {
+                document.getElementById('skinMenu').classList.toggle('active');
+            });
+
+            // Opções de tema
+            document.querySelectorAll('.skin-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const skinNumber = this.getAttribute('data-skin');
+                    changeSkin(skinNumber);
+                    document.getElementById('skinMenu').classList.remove('active');
+                });
+            });
+
+            // Botões de ação
+            document.getElementById('importBtn').addEventListener('click', openImportModal);
+            document.getElementById('addRowBtn').addEventListener('click', addNewRow);
+            document.getElementById('bulkEditBtn').addEventListener('click', openBulkEditModal);
+            document.getElementById('generateBtn').addEventListener('click', generateTxtFile);
+
+            // Filtro (ícones nas colunas)
+            document.querySelectorAll('.filter-icon').forEach(icon => {
+                icon.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const column = this.previousElementSibling.textContent;
+                    const rect = this.getBoundingClientRect();
+                    openExcelFilterMenu(column, rect.left, rect.bottom);
+                });
+            });
+
+            // Eventos do menu de filtro
+            document.getElementById('applyFilterBtn').addEventListener('click', applyExcelFilter);
+            document.getElementById('clearFilterBtn').addEventListener('click', clearExcelFilter);
+            document.getElementById('filterSearch').addEventListener('input', filterExcelList);
+            
+            // Fechar menu ao clicar fora
+            document.addEventListener('click', function(e) {
+                const menu = document.getElementById('columnFilterMenu');
+                if (!menu.contains(e.target) && !e.target.classList.contains('filter-icon')) {
+                    menu.classList.remove('active');
+                }
+            });
+
+            // Select All Checkbox
+            document.getElementById('selectAllCheckbox').addEventListener('change', function() {
+                const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+                checkboxes.forEach(cb => {
+                    cb.checked = this.checked;
+                    updateSelectedRows();
+                });
+            });
+
+            // Paginação
+            document.getElementById('prevBtn').addEventListener('click', previousPage);
+            document.getElementById('nextBtn').addEventListener('click', nextPage);
+
+            // Modal de importação
+            document.getElementById('excelFile').addEventListener('change', handleExcelFileSelect);
+            document.getElementById('proceedMappingBtn').addEventListener('click', proceedToMapping);
+            document.getElementById('confirmMappingBtn').addEventListener('click', confirmMapping);
+            document.getElementById('confirmBulkEditBtn').addEventListener('click', applyBulkEdit);
+        }
+
+        function changeSkin(skinNumber) {
+            // Remove todas as classes de skin
+            document.body.classList.remove('skin-1', 'skin-2', 'skin-3', 'skin-4', 'skin-5');
+            // Adiciona a nova classe
+            document.body.classList.add(`skin-${skinNumber}`);
+            // Salva no localStorage
+            localStorage.setItem('selectedSkin', skinNumber);
+            showMessage(`Tema ${skinNumber} aplicado!`, 'success');
+        }
+
+        function loadThemeFromStorage() {
+            const savedSkin = localStorage.getItem('selectedSkin') || '2';
+            changeSkin(savedSkin);
+        }
+
+        // ============================================
+        // GERENCIAMENTO DE MODAIS
+        // ============================================
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Fechar modal ao clicar fora
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        });
+
+        // ============================================
+        // IMPORTAÇÃO DE EXCEL
+        // ============================================
+        function openImportModal() {
+            document.getElementById('excelFile').value = '';
+            document.getElementById('sheetSelector').style.display = 'none';
+            openModal('importModal');
+        }
+
+        function handleExcelFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            showLoading('Lendo arquivo Excel...', () => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        const workbook = XLSX.read(data, { type: 'array' });
+
+                        // Se houver múltiplas abas, mostrar seletor
+                        if (workbook.SheetNames.length > 1) {
+                            const sheetSelect = document.getElementById('sheetSelect');
+                            sheetSelect.innerHTML = '';
+                            workbook.SheetNames.forEach(name => {
+                                const option = document.createElement('option');
+                                option.value = name;
+                                option.textContent = name;
+                                sheetSelect.appendChild(option);
+                            });
+                            document.getElementById('sheetSelector').style.display = 'block';
+                        }
+
+                        // Armazenar workbook para uso posterior
+                        window.currentWorkbook = workbook;
+                        showMessage('Arquivo Excel carregado com sucesso!', 'success');
+                        
+                        // Se houver apenas uma aba, prosseguir automaticamente para o mapeamento
+                        if (workbook.SheetNames.length === 1) {
+                            proceedToMapping();
+                        }
+                    } catch (error) {
+                        showMessage('Erro ao ler o arquivo Excel: ' + error.message, 'error');
+                    }
+                };
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        // ============================================
+        // AUTO-MAPEAMENTO INTELIGENTE DE COLUNAS
+        // ============================================
+        function autoMapColumns(columns) {
+            // Palavras-chave para cada campo
+            const keywords = {
+                codigo: ['cod', 'código', 'code', 'id', 'number', 'num', 'n°', 'nº'],
+                regime: ['regime', 'tax', 'tipo', 'type', 'categoria', 'category', 'classificação'],
+                cnpj: ['cnpj', 'cpf', 'documento', 'doc', 'registration', 'cnpj/cpf'],
+                nome: ['nome', 'name', 'razão', 'razão social', 'empresa', 'company', 'denominação', 'social']
+            };
+
+            const mapping = {
+                codigo: null,
+                regime: null,
+                cnpj: null,
+                nome: null
+            };
+
+            // Para cada campo, encontrar a coluna mais apropriada
+            Object.keys(mapping).forEach(field => {
+                let bestMatch = null;
+                let bestScore = 0;
+
+                columns.forEach(col => {
+                    const colLower = col.toLowerCase().trim();
+                    let score = 0;
+
+                    // Verificar correspondência exata
+                    if (keywords[field].includes(colLower)) {
+                        score = 100;
+                    } else {
+                        // Verificar correspondência parcial
+                        keywords[field].forEach(keyword => {
+                            if (colLower.includes(keyword) || keyword.includes(colLower)) {
+                                score = Math.max(score, 80);
+                            }
+                            // Verificar similaridade de Levenshtein simplificada
+                            if (calculateSimilarity(colLower, keyword) > 0.7) {
+                                score = Math.max(score, 60);
+                            }
+                        });
+                    }
+
+                    if (score > bestScore) {
+                        bestScore = score;
+                        bestMatch = col;
+                    }
+                });
+
+                if (bestMatch && bestScore > 0) {
+                    mapping[field] = bestMatch;
+                }
+            });
+
+            return mapping;
+        }
+
+        // Função auxiliar para calcular similaridade entre strings
+        function calculateSimilarity(str1, str2) {
+            const longer = str1.length > str2.length ? str1 : str2;
+            const shorter = str1.length > str2.length ? str2 : str1;
+
+            if (longer.length === 0) return 1.0;
+
+            const editDistance = getEditDistance(longer, shorter);
+            return (longer.length - editDistance) / longer.length;
+        }
+
+        // Função para calcular distância de Levenshtein
+        function getEditDistance(s1, s2) {
+            const costs = [];
+            for (let i = 0; i <= s1.length; i++) {
+                let lastValue = i;
+                for (let j = 0; j <= s2.length; j++) {
+                    if (i === 0) {
+                        costs[j] = j;
+                    } else if (j > 0) {
+                        let newValue = costs[j - 1];
+                        if (s1.charAt(i - 1) !== s2.charAt(j - 1)) {
+                            newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+                        }
+                        costs[j - 1] = lastValue;
+                        lastValue = newValue;
+                    }
+                }
+                if (i > 0) costs[s2.length] = lastValue;
+            }
+            return costs[s2.length];
+        }
+
+        function proceedToMapping() {
+            const workbook = window.currentWorkbook;
+            if (!workbook) {
+                showMessage('Nenhum arquivo carregado', 'error');
+                return;
+            }
+
+            // Obter nome da aba
+            let sheetName = workbook.SheetNames[0];
+            if (workbook.SheetNames.length > 1) {
+                sheetName = document.getElementById('sheetSelect').value;
+            }
+
+            // Ler dados da aba
+            const worksheet = workbook.Sheets[sheetName];
+            const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+            if (jsonData.length === 0) {
+                showMessage('A aba selecionada está vazia', 'error');
+                return;
+            }
+
+            currentExcelData = jsonData;
+
+            // Obter colunas disponíveis
+            const columns = Object.keys(jsonData[0]);
+
+            // Auto-mapear colunas
+            const autoMapping = autoMapColumns(columns);
+
+            // Preencher dropdowns de mapeamento com as colunas disponíveis
+            ['mapCodigo', 'mapRegime', 'mapCnpj', 'mapNome'].forEach((selectId, index) => {
+                const fieldNames = ['codigo', 'regime', 'cnpj', 'nome'];
+                const fieldName = fieldNames[index];
+                const select = document.getElementById(selectId);
+                select.innerHTML = '<option value="">-- Selecione --</option>';
+                
+                columns.forEach(col => {
+                    const option = document.createElement('option');
+                    option.value = col;
+                    option.textContent = col;
+                    select.appendChild(option);
+                });
+
+                // Definir valor auto-mapeado
+                if (autoMapping[fieldName]) {
+                    select.value = autoMapping[fieldName];
+                }
+            });
+
+            closeModal('importModal');
+            openModal('mappingModal');
+            showMessage('Mapeamento automático realizado. Verifique e ajuste se necessário.', 'info');
+        }
+
+        function confirmMapping() {
+            const mapCodigo = document.getElementById('mapCodigo').value;
+            const mapRegime = document.getElementById('mapRegime').value;
+            const mapCnpj = document.getElementById('mapCnpj').value;
+            const mapNome = document.getElementById('mapNome').value;
+
+            if (!mapCodigo || !mapRegime || !mapCnpj || !mapNome) {
+                showMessage('Todos os campos devem ser mapeados. Verifique o mapeamento automático.', 'error');
+                return;
+            }
+
+            columnMapping = {
+                codigo: mapCodigo,
+                regime: mapRegime,
+                cnpj: mapCnpj,
+                nome: mapNome
+            };
+
+            // Converter dados do Excel para o formato esperado
+            profilesData = currentExcelData.map(row => ({
+                codigo: row[columnMapping.codigo] || '',
+                regime: row[columnMapping.regime] || '',
+                cnpj: row[columnMapping.cnpj] || '',
+                nome: row[columnMapping.nome] || ''
+            }));
+
+            closeModal('mappingModal');
+            currentPage = 1;
+            renderTable();
+            showMessage(`${profilesData.length} empresas importadas com sucesso! Mapeamento: Código=${mapCodigo}, Regime=${mapRegime}, CNPJ=${mapCnpj}, Nome=${mapNome}`, 'success');
+        }
+
+        // ============================================
+        // GERENCIAMENTO DA TABELA E PAGINAÇÃO
+        // ============================================
+        function renderTable(dataToRender = null) {
+            const tbody = document.getElementById('profilesTableBody');
+            // Prioridade: dados passados via argumento > dados filtrados > dados totais
+            const data = dataToRender || (Object.keys(activeFilters).length > 0 ? filteredData : profilesData);
+
+            // Calcular paginação
+            const totalPages = Math.ceil(data.length / itemsPerPage);
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const pageData = data.slice(startIndex, endIndex);
+
+            tbody.innerHTML = '';
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 25px; color: rgba(255, 255, 255, 0.5); font-size: 13px;">Nenhuma empresa adicionada.</td></tr>';
+                updatePagination(0);
+                return;
+            }
+
+            pageData.forEach((row, index) => {
+                const originalIndex = profilesData.indexOf(row);
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                        <input type="checkbox" class="row-checkbox" data-index="${originalIndex}" onchange="updateSelectedRows()">
+                    </td>
+                    <td>
+                        <input type="text" class="table-input" value="${row.codigo}" data-field="codigo" data-index="${originalIndex}" onchange="updateField(${originalIndex}, 'codigo', this.value)">
+                    </td>
+                    <td>
+                        <input type="text" class="table-input" value="${row.regime}" data-field="regime" data-index="${originalIndex}" onchange="updateField(${originalIndex}, 'regime', this.value)">
+                    </td>
+                    <td>
+                        <input type="text" class="table-input" value="${row.cnpj}" data-field="cnpj" data-index="${originalIndex}" onchange="updateField(${originalIndex}, 'cnpj', this.value)">
+                    </td>
+                    <td>
+                        <input type="text" class="table-input" value="${row.nome}" data-field="nome" data-index="${originalIndex}" onchange="updateField(${originalIndex}, 'nome', this.value)">
+                    </td>
+                    <td>
+                        <div class="row-actions">
+                            <button class="icon-btn" onclick="deleteRow(${originalIndex})" title="Excluir">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            updatePagination(totalPages);
+        }
+
+        function updatePagination(totalPages) {
+            const paginationInfo = document.getElementById('paginationInfo');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const pageNumbers = document.getElementById('pageNumbers');
+
+            if (totalPages === 0) {
+                paginationInfo.textContent = 'Página 0 de 0';
+                prevBtn.disabled = true;
+                nextBtn.disabled = true;
+                pageNumbers.innerHTML = '';
+                return;
+            }
+
+            paginationInfo.textContent = `Página ${currentPage} de ${totalPages}`;
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+
+            // Gerar botões de página
+            pageNumbers.innerHTML = '';
+            const maxButtons = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxButtons / 2));
+            let endPage = Math.min(totalPages, startPage + maxButtons - 1);
+
+            if (endPage - startPage < maxButtons - 1) {
+                startPage = Math.max(1, endPage - maxButtons + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const btn = document.createElement('button');
+                btn.className = `pagination-btn ${i === currentPage ? 'active' : ''}`;
+                btn.textContent = i;
+                btn.onclick = () => goToPage(i);
+                pageNumbers.appendChild(btn);
+            }
+        }
+
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+            }
+        }
+
+        function nextPage() {
+            const totalPages = Math.ceil(profilesData.length / itemsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+            }
+        }
+
+        function goToPage(page) {
+            currentPage = page;
+            renderTable();
+        }
+
+        function updateField(index, field, value) {
+            if (profilesData[index]) {
+                profilesData[index][field] = value;
+            }
+        }
+
+        function deleteRow(index) {
+            if (confirm('Tem certeza que deseja excluir esta empresa?')) {
+                profilesData.splice(index, 1);
+                const totalPages = Math.ceil(profilesData.length / itemsPerPage);
+                if (currentPage > totalPages && currentPage > 1) {
+                    currentPage--;
+                }
+                renderTable();
+                showMessage('Empresa excluída', 'success');
+            }
+        }
+
+        function addNewRow() {
+            profilesData.push({
+                codigo: '',
+                regime: '',
+                cnpj: '',
+                nome: ''
+            });
+            const totalPages = Math.ceil(profilesData.length / itemsPerPage);
+            currentPage = totalPages;
+            renderTable();
+            showMessage('Nova linha adicionada', 'success');
+        }
+
+        function updateSelectedRows() {
+            selectedRows.clear();
+            document.querySelectorAll('tbody input[type="checkbox"]:checked').forEach(cb => {
+                selectedRows.add(parseInt(cb.getAttribute('data-index')));
+            });
+        }
+
+        function openExcelFilterMenu(column, x, y) {
+            const fieldMap = {
+                'Código': 'codigo',
+                'Regime': 'regime',
+                'CNPJ': 'cnpj',
+                'Nome da Empresa': 'nome'
+            };
+            currentFilterField = fieldMap[column];
+            if (!currentFilterField) return;
+
+            const menu = document.getElementById('columnFilterMenu');
+            menu.style.left = `${x - 180}px`;
+            menu.style.top = `${y + 10}px`;
+            menu.classList.add('active');
+
+            // Limpar busca
+            document.getElementById('filterSearch').value = '';
+
+            // Obter valores únicos
+            const uniqueValues = [...new Set(profilesData.map(item => item[currentFilterField]))].sort();
+            const listContainer = document.getElementById('filterList');
+            listContainer.innerHTML = '';
+
+            // Adicionar opção "Selecionar Todos"
+            const selectAllDiv = document.createElement('div');
+            selectAllDiv.className = 'filter-item';
+            selectAllDiv.innerHTML = `<input type="checkbox" id="filterSelectAll" checked> <label for="filterSelectAll">(Selecionar Tudo)</label>`;
+            listContainer.appendChild(selectAllDiv);
+
+            selectAllDiv.querySelector('input').addEventListener('change', function() {
+                const checks = listContainer.querySelectorAll('input:not(#filterSelectAll)');
+                checks.forEach(c => c.checked = this.checked);
+            });
+
+            uniqueValues.forEach(val => {
+                if (val === undefined || val === null || val === '') return;
+                const div = document.createElement('div');
+                div.className = 'filter-item';
+                const isChecked = !activeFilters[currentFilterField] || activeFilters[currentFilterField].includes(val);
+                div.innerHTML = `<input type="checkbox" value="${val}" ${isChecked ? 'checked' : ''}> <span>${val}</span>`;
+                div.addEventListener('click', function(e) {
+                    if (e.target.tagName !== 'INPUT') {
+                        const cb = this.querySelector('input');
+                        cb.checked = !cb.checked;
+                    }
+                });
+                listContainer.appendChild(div);
+            });
+        }
+
+        function filterExcelList() {
+            const term = this.value.toLowerCase();
+            const items = document.querySelectorAll('#filterList .filter-item:not(:first-child)');
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                item.style.display = text.includes(term) ? 'flex' : 'none';
+            });
+        }
+
+        function applyExcelFilter() {
+            const selectedValues = [];
+            const checkboxes = document.querySelectorAll('#filterList input:not(#filterSelectAll):checked');
+            checkboxes.forEach(cb => selectedValues.push(cb.value));
+
+            const totalValues = document.querySelectorAll('#filterList input:not(#filterSelectAll)').length;
+            
+            if (checkboxes.length === totalValues) {
+                delete activeFilters[currentFilterField];
+            } else {
+                activeFilters[currentFilterField] = selectedValues;
+            }
+
+            document.getElementById('columnFilterMenu').classList.remove('active');
+            runFilters();
+        }
+
+        function clearExcelFilter() {
+            delete activeFilters[currentFilterField];
+            document.getElementById('columnFilterMenu').classList.remove('active');
+            runFilters();
+        }
+
+        function runFilters() {
+            filteredData = profilesData.filter(row => {
+                return Object.keys(activeFilters).every(field => {
+                    return activeFilters[field].includes(row[field].toString());
+                });
+            });
+            currentPage = 1;
+            renderTable(filteredData);
+            
+            // Atualizar ícones de filtro (mudar cor se ativo)
+            document.querySelectorAll('.filter-icon').forEach(icon => {
+                const column = icon.previousElementSibling.textContent;
+                const fieldMap = { 'Código': 'codigo', 'Regime': 'regime', 'CNPJ': 'cnpj', 'Nome da Empresa': 'nome' };
+                const field = fieldMap[column];
+                if (activeFilters[field]) {
+                    icon.style.color = '#FFD700';
+                } else {
+                    icon.style.color = '';
+                }
+            });
+        }
+
+        function openBulkEditModal() {
+            if (selectedRows.size === 0) {
+                showMessage('Selecione pelo menos uma empresa', 'error');
+                return;
+            }
+            document.getElementById('bulkRegime').value = '';
+            openModal('bulkEditModal');
+        }
+
+        function applyBulkEdit() {
+            const newRegime = document.getElementById('bulkRegime').value;
+
+            if (!newRegime) {
+                showMessage('Preencha pelo menos um campo', 'error');
+                return;
+            }
+
+            selectedRows.forEach(index => {
+                if (profilesData[index]) {
+                    profilesData[index].regime = newRegime;
+                }
+            });
+
+            closeModal('bulkEditModal');
+            renderTable();
+            showMessage(`${selectedRows.size} empresa(s) atualizada(s)`, 'success');
+            selectedRows.clear();
+            document.getElementById('selectAllCheckbox').checked = false;
+        }
+
+        // ============================================
+        // GERAÇÃO DO ARQUIVO TXT
+        // ============================================
+        function showLoading(message, callback) {
+            const overlay = document.getElementById('loadingOverlay');
+            const percentageText = document.getElementById('spinnerPercentage');
+            const messageText = document.getElementById('loadingMessage');
+            
+            messageText.textContent = message;
+            overlay.classList.add('active');
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.floor(Math.random() * 15) + 5; 
+                if (progress >= 100) {
+                    progress = 100;
+                    percentageText.textContent = progress + '%';
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        overlay.classList.remove('active');
+                        if (callback) callback();
+                    }, 500);
+                } else {
+                    percentageText.textContent = progress + '%';
+                }
+            }, 150);
+        }
+
+        function generateTxtFile() {
+            if (profilesData.length === 0) {
+                showMessage('Nenhuma empresa para gerar o arquivo', 'error');
+                return;
+            }
+
+            showLoading('Gerando arquivo TXT...', () => {
+                // Agrupar por regime
+                const groupedByRegime = {};
+                profilesData.forEach(row => {
+                    const regime = row.regime.trim();
+                    if (!groupedByRegime[regime]) {
+                        groupedByRegime[regime] = [];
+                    }
+                    groupedByRegime[regime].push(row.codigo);
+                });
+
+                // Gerar conteúdo do arquivo
+                let content = '';
+                Object.keys(groupedByRegime).sort().forEach(regime => {
+                    const codigos = groupedByRegime[regime].join(',');
+                    content += `${regime};${codigos}\n`;
+                });
+
+                // Criar blob e fazer download
+                const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = 'selecao_empresas.txt';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                showMessage('Arquivo "selecao_empresas.txt" gerado com sucesso!', 'success');
+            });
+        }
+
+        // ============================================
+        // UTILITÁRIOS
+        // ============================================
+        function showMessage(text, type = 'info') {
+            const container = document.getElementById('messageContainer');
+            const message = document.createElement('div');
+            message.className = `message ${type}`;
+            message.textContent = text;
+            container.appendChild(message);
+
+            // Remover mensagem após 5 segundos
+            setTimeout(() => {
+                message.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
